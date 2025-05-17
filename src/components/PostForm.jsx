@@ -28,10 +28,6 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting, userName }) {
       setError("Please provide either some text or an image URL.");
       return;
     }
-    if (!userName.trim()) {
-      setError("Please set your name at the top before posting.");
-      return;
-    }
     setError("");
     onSubmit({
       content: content.trim(),
@@ -41,9 +37,9 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting, userName }) {
   };
 
   const avatar =
-    userName && userName.trim()
+    (userName && userName.trim()
       ? userName.trim()[0].toUpperCase()
-      : <span role="img" aria-label="user">👤</span>;
+      : "A");
 
   return (
     <form onSubmit={handleSubmit} className="post-form">
@@ -85,7 +81,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting, userName }) {
         >
           {avatar}
         </div>
-        <span style={{ fontWeight: 600 }}>{userName ? userName : "Set your name above"}</span>
+        <span style={{ fontWeight: 600 }}>{userName.trim() || "Anonymous"}</span>
       </div>
 
       <div className="form-group">
