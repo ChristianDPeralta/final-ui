@@ -7,7 +7,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
   useEffect(() => {
     if (initialData) {
-      setAuthor(initialData.author);
+      setAuthor(initialData.author || "");
       setContent(initialData.content);
       setImageUrl(initialData.imageUrl || "");
     } else {
