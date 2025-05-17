@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { getPosts, createPost, updatePost, deletePost } from "./api";
 import Header from "./components/Header";
 import PostForm from "./components/PostForm";
-import PostList from "./components/PostLIst";
+import PostList from "./components/PostList";
+import UserContext from "./UserContext";
 import "./index.css";
 
 function App() {
@@ -11,6 +12,14 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+
+  // Dummy current user (replace with real auth)
+  const currentUser = {
+    id: 1,
+    username: "demoUser",
+    displayName: "Demo User",
+    avatarUrl: "",
+  };
 
   useEffect(() => {
     fetchPosts();
@@ -29,7 +38,8 @@ function App() {
 
   const handleCreate = (data) => {
     setSubmitting(true);
-    createPost(data)
+    // Attach userId (if your backend expects)
+    createPost({ ...data, userId: currentUser.id, author: currentUser.displayName })
       .then((res) => {
         setPosts([res.data, ...posts]);
       })
@@ -38,7 +48,7 @@ function App() {
 
   const handleUpdate = (id, data) => {
     setSubmitting(true);
-    updatePost(id, data)
+    updatePost(id, { ...data, userId: currentUser.id, author: currentUser.displayName })
       .then((res) => {
         setPosts(posts.map((p) => (p.id === id ? res.data : p)));
         setEditing(null);
@@ -55,23 +65,29 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <Header />
-      <div className="app-container">
-        <PostForm
-          onSubmit={editing ? (data) => handleUpdate(editing.id, data) : handleCreate}
-          initialData={editing}
-          cancelEdit={() => setEditing(null)}
-          submitting={submitting}
-        />
+    <UserContext.Provider value={currentUser}>
+      <div className="app">
+        <Header />
+        <div className="app-container">
+          <PostForm
+            onSubmit={editing ? (data) => handleUpdate(editing.id, data) : handleCreate}
+            initialData={editing}
+            cancelEdit={() => setEditing(null)}
+            submitting={submitting}
+          />
 
-        {loading && <p>Loading posts...</p>}
-        {error && <p style={{ color: "red" }}>{error}</p>}
-        {!loading && !error && (
-          <PostList posts={posts} onEdit={setEditing} onDelete={handleDelete} />
-        )}
+          {loading && <p>Loading posts...</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {!loading && !error && (
+            <PostList
+              posts={posts}
+              onEdit={setEditing}
+              onDelete={handleDelete}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </UserContext.Provider>
   );
 }
 
