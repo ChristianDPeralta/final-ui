@@ -4,6 +4,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialData) {
@@ -20,11 +21,23 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
     setAuthor("");
     setContent("");
     setImageUrl("");
+    setError("");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // No required fields now!
+
+    // Require at least one input to be filled
+    if (
+      !author.trim() &&
+      !content.trim() &&
+      !imageUrl.trim()
+    ) {
+      setError("Please fill in at least one field.");
+      return;
+    }
+
+    setError("");
     onSubmit({
       author,
       content,
@@ -36,6 +49,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
   return (
     <form onSubmit={handleSubmit} className="post-form">
+      {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
       <div className="form-group">
         <input
           type="text"
