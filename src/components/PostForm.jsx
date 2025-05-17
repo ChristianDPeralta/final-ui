@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
-import { useUser } from "../UserContext";
-import "../index.css"; // Using your global styles
+import "../index.css";
 
 function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
-  const user = useUser();
-  const [author, setAuthor] = useState(user?.displayName || "");
+  const [author, setAuthor] = useState("");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialData) {
-      setAuthor(initialData.author || user?.displayName || "");
+      setAuthor(initialData.author || "");
       setContent(initialData.content || "");
       setImageUrl(initialData.imageUrl || "");
     } else {
@@ -21,7 +19,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   }, [initialData]);
 
   const resetForm = () => {
-    setAuthor(user?.displayName || "");
+    setAuthor("");
     setContent("");
     setImageUrl("");
     setError("");
@@ -30,7 +28,6 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // At least content or imageUrl required
     if (!content.trim() && !imageUrl.trim()) {
       setError("Please provide either some text or an image URL.");
       return;
@@ -38,7 +35,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
     setError("");
     onSubmit({
-      author: author.trim() || user?.displayName || "Anonymous",
+      author: author.trim(),
       content: content.trim(),
       imageUrl: imageUrl.trim() || null,
     });
@@ -109,6 +106,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           disabled={submitting}
+          style={{ color: "var(--text-color)", background: "inherit" }}
         />
       </div>
 
@@ -151,5 +149,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
     </form>
   );
 }
+
+export default PostForm;
 
 export default PostForm;
