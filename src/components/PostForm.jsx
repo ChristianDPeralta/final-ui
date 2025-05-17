@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import "../index.css";
 
-function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
-  const [author, setAuthor] = useState("");
+function PostForm({ onSubmit, initialData, cancelEdit, submitting, userName }) {
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialData) {
-      setAuthor(initialData.author || "");
       setContent(initialData.content || "");
       setImageUrl(initialData.imageUrl || "");
     } else {
@@ -19,7 +17,6 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   }, [initialData]);
 
   const resetForm = () => {
-    setAuthor("");
     setContent("");
     setImageUrl("");
     setError("");
@@ -27,26 +24,26 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!content.trim() && !imageUrl.trim()) {
       setError("Please provide either some text or an image URL.");
       return;
     }
-
+    if (!userName.trim()) {
+      setError("Please set your name at the top before posting.");
+      return;
+    }
     setError("");
     onSubmit({
-      author: author.trim(),
       content: content.trim(),
       imageUrl: imageUrl.trim() || null,
     });
-
     if (!initialData) resetForm();
   };
 
   // Avatar fallback (first letter or generic emoji)
   const avatar =
-    author && author.trim()
-      ? author.trim()[0].toUpperCase()
+    userName && userName.trim()
+      ? userName.trim()[0].toUpperCase()
       : <span role="img" aria-label="user">👤</span>;
 
   return (
@@ -89,15 +86,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
         >
           {avatar}
         </div>
-        <input
-          type="text"
-          placeholder="Your name (optional)"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          disabled={submitting}
-          maxLength={40}
-          style={{ maxWidth: 170 }}
-        />
+        <span style={{ fontWeight: 600 }}>{userName ? userName : "Set your name above"}</span>
       </div>
 
       <div className="form-group">
