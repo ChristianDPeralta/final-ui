@@ -13,6 +13,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
     } else {
       resetForm();
     }
+    // eslint-disable-next-line
   }, [initialData]);
 
   const resetForm = () => {
@@ -23,7 +24,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!author || !content) return;
+    if (!content) return; // Only content is required
 
     onSubmit({
       author,
@@ -39,10 +40,9 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
       <div className="form-group">
         <input
           type="text"
-          placeholder="Your name"
+          placeholder="Your name (optional)"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
-          required
           disabled={submitting}
         />
       </div>
