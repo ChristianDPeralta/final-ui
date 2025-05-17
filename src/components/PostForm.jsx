@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
+import { useUser } from "../UserContext";
 import "../index.css"; // Using your global styles
 
 function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
-  const [author, setAuthor] = useState("");
+  const user = useUser();
+  const [author, setAuthor] = useState(user?.displayName || "");
   const [content, setContent] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (initialData) {
-      setAuthor(initialData.author || "");
+      setAuthor(initialData.author || user?.displayName || "");
       setContent(initialData.content || "");
       setImageUrl(initialData.imageUrl || "");
     } else {
@@ -19,7 +21,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   }, [initialData]);
 
   const resetForm = () => {
-    setAuthor("");
+    setAuthor(user?.displayName || "");
     setContent("");
     setImageUrl("");
     setError("");
@@ -36,7 +38,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
     setError("");
     onSubmit({
-      author: author.trim(),
+      author: author.trim() || user?.displayName || "Anonymous",
       content: content.trim(),
       imageUrl: imageUrl.trim() || null,
     });
