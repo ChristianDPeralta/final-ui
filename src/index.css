@@ -298,3 +298,18 @@ input:focus, textarea:focus {
   padding: 4px 0;
   font-size: 0.98em;
 }
+.comment-btn {
+  padding: 7px 16px;
+  background: var(--primary, #1976d2);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.comment-btn:hover,
+.comment-btn:focus {
+  background: #1253a2; /* A darker shade */
+  color: #e3f2fd;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+}
