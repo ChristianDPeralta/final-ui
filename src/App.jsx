@@ -6,12 +6,12 @@ import PostList from "./components/PostList";
 import "./index.css";
 
 function App() {
+  const [userName, setUserName] = useState("");
   const [posts, setPosts] = useState([]);
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     fetchPosts();
