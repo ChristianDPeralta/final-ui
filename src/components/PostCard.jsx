@@ -23,12 +23,14 @@ function PostCard({ post, onEdit, onDelete, userName }) {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    if (!userName.trim()) return;
+
+    // Use "Anonymous" if the userName is blank
+    const author = userName.trim() || "Anonymous";
     try {
-      // Only send content and author, as most backends need
+      // If your backend requires userId, update this call accordingly
       const res = await addComment(
         post.id,
-        { content: commentText, author: userName.trim() }
+        { content: commentText, author }
       );
       setComments([...comments, res.data]);
       setCommentText("");
@@ -77,7 +79,7 @@ function PostCard({ post, onEdit, onDelete, userName }) {
   const postAvatar =
     post.author && post.author.trim()
       ? post.author.trim()[0].toUpperCase()
-      : "👤";
+      : "A";
 
   return (
     <div className="post-card" id={`post-${post.id}`}>
@@ -119,7 +121,7 @@ function PostCard({ post, onEdit, onDelete, userName }) {
         )}
         {comments.map(comment => {
           const cAuthor = comment.author || comment.user?.displayName || comment.user?.username || "Anonymous";
-          const cAvatar = cAuthor && cAuthor.trim() ? cAuthor.trim()[0].toUpperCase() : "👤";
+          const cAvatar = cAuthor && cAuthor.trim() ? cAuthor.trim()[0].toUpperCase() : "A";
           return (
             <div className="comment" key={comment.id} style={{ color: "var(--text-color)" }}>
               <span className="author-avatar" style={{
@@ -134,7 +136,7 @@ function PostCard({ post, onEdit, onDelete, userName }) {
         <form onSubmit={handleAddComment} style={{ marginTop: 8, display: "flex", gap: 7, alignItems: "center" }}>
           <input
             type="text"
-            value={userName}
+            value={userName.trim() || "Anonymous"}
             disabled
             placeholder="Your name"
             style={{
@@ -174,7 +176,7 @@ function PostCard({ post, onEdit, onDelete, userName }) {
               border: "none",
               borderRadius: "5px"
             }}
-            disabled={!userName.trim() || !commentText.trim()}
+            disabled={!commentText.trim()}
           >
             Comment
           </button>
