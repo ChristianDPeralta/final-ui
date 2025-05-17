@@ -30,7 +30,7 @@ function App() {
 
   const handleCreate = (data) => {
     setSubmitting(true);
-    createPost({ ...data, author: userName })
+    createPost({ ...data, author: userName.trim() || "Anonymous" })
       .then((res) => {
         setPosts([res.data, ...posts]);
       })
@@ -39,7 +39,7 @@ function App() {
 
   const handleUpdate = (id, data) => {
     setSubmitting(true);
-    updatePost(id, { ...data, author: userName })
+    updatePost(id, { ...data, author: userName.trim() || "Anonymous" })
       .then((res) => {
         setPosts(posts.map((p) => (p.id === id ? res.data : p)));
         setEditing(null);
