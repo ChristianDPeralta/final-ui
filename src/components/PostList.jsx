@@ -1,10 +1,10 @@
 import PostCard from "./PostCard";
 
-function PostList({ posts, onEdit, onDelete }) {
+function PostList({ posts, onEdit, onDelete, userName }) {
   return (
     <div className="post-list">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} onEdit={onEdit} onDelete={onDelete} />
+        <PostCard key={post.id} post={post} onEdit={onEdit} onDelete={onDelete} userName={userName} />
       ))}
     </div>
   );
