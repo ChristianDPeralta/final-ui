@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { getComments, addComment } from "../api";
+import { useUser } from "../UserContext";
 
 function PostCard({ post, onEdit, onDelete }) {
+  const currentUser = useUser();
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [likeCount, setLikeCount] = useState(post.likes || 0);
@@ -25,10 +27,11 @@ function PostCard({ post, onEdit, onDelete }) {
     e.preventDefault();
     if (!commentText.trim()) return;
     try {
-      const res = await addComment(post.id, {
-        author: "Anonymous",
-        text: commentText
-      });
+      const res = await addComment(
+        post.id,
+        { content: commentText },
+        currentUser.id // Pass userId as param!
+      );
       setComments([...comments, res.data]);
       setCommentText("");
     } catch (err) {
@@ -113,7 +116,9 @@ function PostCard({ post, onEdit, onDelete }) {
         )}
         {comments.map(comment => (
           <div className="comment" key={comment.id}>
-            <span className="comment-author">{comment.author}</span>: {comment.text}
+            <span className="comment-author">
+              {comment.user?.displayName || comment.user?.username || "Anonymous"}
+            </span>: {comment.content}
           </div>
         ))}
         <form onSubmit={handleAddComment} style={{ marginTop: 8, display: "flex", gap: 7 }}>
