@@ -20,17 +20,23 @@ function PostCard({ post, onEdit, onDelete, userName }) {
     return () => { isMounted = false; };
   }, [post.id]);
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-    try {
-      // If you want to support userId, add it here
-      const payload = {
-        content: commentText,
-        post: { id: post.id }
-      };
-      // Optionally, if you manage userId:
-      // if (userId) payload.user = { id: userId };
+  // In your handleAddComment in PostCard.jsx, send the author field:
+const handleAddComment = async (e) => {
+  e.preventDefault();
+  if (!commentText.trim()) return;
+  try {
+    const payload = {
+      content: commentText,
+      post: { id: post.id },
+      author: userName || "Anonymous"
+    };
+    const res = await addComment(payload);
+    setComments([...comments, res.data]);
+    setCommentText("");
+  } catch (err) {
+    // Optionally show an error
+  }
+};
 
       const res = await addComment(payload);
       setComments([...comments, res.data]);
