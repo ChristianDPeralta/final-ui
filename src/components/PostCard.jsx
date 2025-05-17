@@ -170,13 +170,7 @@ function PostCard({ post, onEdit, onDelete, userName }) {
           />
           <button
             type="submit"
-            style={{
-              padding: "7px 16px",
-              background: "var(--primary, #1976d2)",
-              color: "#fff",
-              border: "none",
-              borderRadius: "5px"
-            }}
+            className="comment-btn"
             disabled={!commentText.trim()}
           >
             Comment
