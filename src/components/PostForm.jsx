@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./index.css"; // Using your global styles
+import "../index.css"; // Using your global styles
 
 function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const [author, setAuthor] = useState("");
