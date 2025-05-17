@@ -23,15 +23,16 @@ function PostCard({ post, onEdit, onDelete, userName }) {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-
-    // Use "Anonymous" if the userName is blank
-    const author = userName.trim() || "Anonymous";
     try {
-      // If your backend requires userId, update this call accordingly
-      const res = await addComment(
-        post.id,
-        { content: commentText, author }
-      );
+      // If you want to support userId, add it here
+      const payload = {
+        content: commentText,
+        post: { id: post.id }
+      };
+      // Optionally, if you manage userId:
+      // if (userId) payload.user = { id: userId };
+
+      const res = await addComment(payload);
       setComments([...comments, res.data]);
       setCommentText("");
     } catch (err) {
