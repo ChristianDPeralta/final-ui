@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_BASE = "https://final-api-vr8u.onrender.com/api/posts";
+const COMMENT_BASE = "https://final-api-vr8u.onrender.com/api/comments";
 const USER_BASE = "https://final-api-vr8u.onrender.com/api/users";
 
 // --- Post-related APIs ---
@@ -11,17 +12,13 @@ export const deletePost = (id) => axios.delete(`${API_BASE}/${id}`);
 
 // --- Comment-related APIs ---
 export const getComments = (postId) =>
-  axios.get(`${API_BASE}/${postId}/comments`);
+  axios.get(`${COMMENT_BASE}/post/${postId}`);
 
-export const addComment = (postId, commentData, userId) =>
-  axios.post(
-    `${API_BASE}/${postId}/comments`,
-    commentData,
-    { params: { userId } }
-  );
+export const addComment = (commentData) =>
+  axios.post(`${COMMENT_BASE}`, commentData);
 
-export const deleteComment = (postId, commentId) =>
-  axios.delete(`${API_BASE}/${postId}/comments/${commentId}`);
+export const deleteComment = (commentId) =>
+  axios.delete(`${COMMENT_BASE}/${commentId}`);
 
 // --- User/Profile-related APIs ---
 export const getUserProfile = (userId) =>
