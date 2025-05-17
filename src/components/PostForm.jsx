@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./index.css"; // Using your global styles
 
 function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const [author, setAuthor] = useState("");
@@ -27,7 +28,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Require at least one of content or imageUrl to be filled
+    // At least content or imageUrl required
     if (!content.trim() && !imageUrl.trim()) {
       setError("Please provide either some text or an image URL.");
       return;
@@ -35,24 +36,68 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
     setError("");
     onSubmit({
-      author,
-      content,
+      author: author.trim(),
+      content: content.trim(),
       imageUrl: imageUrl.trim() || null,
     });
 
     if (!initialData) resetForm();
   };
 
+  // Avatar fallback (first letter or generic emoji)
+  const avatar =
+    author && author.trim()
+      ? author.trim()[0].toUpperCase()
+      : <span role="img" aria-label="user">👤</span>;
+
   return (
     <form onSubmit={handleSubmit} className="post-form">
-      {error && <div style={{ color: "red", marginBottom: 8 }}>{error}</div>}
-      <div className="form-group">
+      {error && (
+        <div
+          style={{
+            color: "#e53935",
+            background: "#fff2f2",
+            borderRadius: "6px",
+            padding: "7px 11px",
+            marginBottom: "10px",
+            fontSize: "0.97rem",
+            textAlign: "center",
+          }}
+        >
+          {error}
+        </div>
+      )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+        }}
+        className="form-group"
+      >
+        <div
+          className="author-avatar"
+          style={{
+            marginRight: 10,
+            fontSize: 20,
+            width: 44,
+            height: 44,
+            minWidth: 44,
+            minHeight: 44,
+            fontWeight: 700,
+            backgroundColor: "var(--secondary)",
+          }}
+        >
+          {avatar}
+        </div>
         <input
           type="text"
           placeholder="Your name (optional)"
           value={author}
           onChange={(e) => setAuthor(e.target.value)}
           disabled={submitting}
+          maxLength={40}
+          style={{ maxWidth: 170 }}
         />
       </div>
 
