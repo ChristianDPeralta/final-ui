@@ -40,7 +40,6 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting, userName }) {
     if (!initialData) resetForm();
   };
 
-  // Avatar fallback (first letter or generic emoji)
   const avatar =
     userName && userName.trim()
       ? userName.trim()[0].toUpperCase()
