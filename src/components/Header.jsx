@@ -1,7 +1,11 @@
+import "./Header.css";
+
 function Header() {
   return (
     <header className="header">
-      <h1>SocialSphere</h1>
+      <h1>
+        <span className="highlight">Social</span>Sphere
+      </h1>
     </header>
   );
 }
