@@ -8,7 +8,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   useEffect(() => {
     if (initialData) {
       setAuthor(initialData.author || "");
-      setContent(initialData.content);
+      setContent(initialData.content || "");
       setImageUrl(initialData.imageUrl || "");
     } else {
       resetForm();
@@ -24,8 +24,7 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!content) return; // Only content is required
-
+    // No required fields now!
     onSubmit({
       author,
       content,
@@ -49,10 +48,9 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 
       <div className="form-group">
         <textarea
-          placeholder="What's on your mind?"
+          placeholder="What's on your mind? (optional)"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          required
           disabled={submitting}
         />
       </div>
