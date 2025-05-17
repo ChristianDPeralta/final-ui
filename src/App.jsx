@@ -11,6 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     fetchPosts();
@@ -29,7 +30,7 @@ function App() {
 
   const handleCreate = (data) => {
     setSubmitting(true);
-    createPost(data)
+    createPost({ ...data, author: userName })
       .then((res) => {
         setPosts([res.data, ...posts]);
       })
@@ -38,7 +39,7 @@ function App() {
 
   const handleUpdate = (id, data) => {
     setSubmitting(true);
-    updatePost(id, data)
+    updatePost(id, { ...data, author: userName })
       .then((res) => {
         setPosts(posts.map((p) => (p.id === id ? res.data : p)));
         setEditing(null);
@@ -56,19 +57,25 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header userName={userName} setUserName={setUserName} />
       <div className="app-container">
         <PostForm
           onSubmit={editing ? (data) => handleUpdate(editing.id, data) : handleCreate}
           initialData={editing}
           cancelEdit={() => setEditing(null)}
           submitting={submitting}
+          userName={userName}
         />
 
         {loading && <p>Loading posts...</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}
         {!loading && !error && (
-          <PostList posts={posts} onEdit={setEditing} onDelete={handleDelete} />
+          <PostList
+            posts={posts}
+            onEdit={setEditing}
+            onDelete={handleDelete}
+            userName={userName}
+          />
         )}
       </div>
     </div>
