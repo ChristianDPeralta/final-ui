@@ -13,7 +13,6 @@ export const deletePost = (id) => axios.delete(`${API_BASE}/${id}`);
 export const getComments = (postId) =>
   axios.get(`${API_BASE}/${postId}/comments`);
 
-// Make sure to provide userId as a param
 export const addComment = (postId, commentData, userId) =>
   axios.post(
     `${API_BASE}/${postId}/comments`,
@@ -21,7 +20,7 @@ export const addComment = (postId, commentData, userId) =>
     { params: { userId } }
   );
 
-export const deleteComment = (postId, commentId) => 
+export const deleteComment = (postId, commentId) =>
   axios.delete(`${API_BASE}/${postId}/comments/${commentId}`);
 
 // --- User/Profile-related APIs ---
