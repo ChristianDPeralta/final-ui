@@ -151,5 +151,3 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
 }
 
 export default PostForm;
-
-export default PostForm;
