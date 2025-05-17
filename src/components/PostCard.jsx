@@ -13,7 +13,7 @@ function PostCard({ post }) {
         if (isMounted) setComments(res.data);
       })
       .catch(() => {
-        if (isMounted) setComments([]); // If error, show no comments but don't break post
+        if (isMounted) setComments([]); // Avoid breaking on error
       });
     return () => { isMounted = false; };
   }, [post.id]);
@@ -29,7 +29,7 @@ function PostCard({ post }) {
       setComments([...comments, res.data]);
       setCommentText("");
     } catch (err) {
-      // Optionally show an error to the user
+      // Optionally handle error
     }
   };
 
@@ -76,7 +76,7 @@ function PostCard({ post }) {
             type="submit"
             style={{
               padding: "7px 16px",
-              background: "var(--primary)",
+              background: "var(--primary, #1976d2)",
               color: "#fff",
               border: "none",
               borderRadius: "5px"
