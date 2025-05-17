@@ -23,12 +23,12 @@ function PostCard({ post, onEdit, onDelete, userName }) {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    if (!userName.trim()) return; // userName required for comments
+    if (!userName.trim()) return;
     try {
+      // Only send content and author, as most backends need
       const res = await addComment(
         post.id,
-        { content: commentText, author: userName.trim() },
-        undefined
+        { content: commentText, author: userName.trim() }
       );
       setComments([...comments, res.data]);
       setCommentText("");
