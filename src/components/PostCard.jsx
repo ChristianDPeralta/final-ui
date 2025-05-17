@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import { getComments, addComment } from "../api";
-import { useUser } from "../UserContext";
 
 function PostCard({ post, onEdit, onDelete }) {
-  const currentUser = useUser();
   const [comments, setComments] = useState([]);
+  const [commentAuthor, setCommentAuthor] = useState(""); // New: commenter's name
   const [commentText, setCommentText] = useState("");
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [liked, setLiked] = useState(false);
   const [shareMsg, setShareMsg] = useState("");
 
-  // Fetch comments for this post
   useEffect(() => {
     let isMounted = true;
     getComments(post.id)
@@ -29,11 +27,12 @@ function PostCard({ post, onEdit, onDelete }) {
     try {
       const res = await addComment(
         post.id,
-        { content: commentText },
-        currentUser.id // Pass userId as param!
+        { content: commentText, author: commentAuthor.trim() },
+        undefined // No userId
       );
       setComments([...comments, res.data]);
       setCommentText("");
+      setCommentAuthor("");
     } catch (err) {
       // Optionally show an error
     }
@@ -43,7 +42,6 @@ function PostCard({ post, onEdit, onDelete }) {
     if (!liked) {
       setLikeCount(likeCount + 1);
       setLiked(true);
-      // Optionally, make an API call to persist the like
     } else {
       setLikeCount(likeCount - 1);
       setLiked(false);
@@ -55,7 +53,7 @@ function PostCard({ post, onEdit, onDelete }) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Check out this post on SocialSphere!",
+          title: "Check out this post!",
           url,
         });
         setShareMsg("Shared!");
@@ -76,12 +74,18 @@ function PostCard({ post, onEdit, onDelete }) {
     }
   };
 
+  // For post avatar
+  const postAvatar =
+    post.author && post.author.trim()
+      ? post.author.trim()[0].toUpperCase()
+      : "👤";
+
   return (
     <div className="post-card" id={`post-${post.id}`}>
       <div className="post-header">
         <div className="author-info">
           <div className="author-avatar">
-            {post.author ? post.author[0].toUpperCase() : "👤"}
+            {postAvatar}
           </div>
           <span className="author-name">{post.author || "Anonymous"}</span>
         </div>
@@ -90,7 +94,7 @@ function PostCard({ post, onEdit, onDelete }) {
           {onDelete && <button onClick={() => onDelete(post.id)} title="Delete">🗑️</button>}
         </div>
       </div>
-      <div className="post-content">{post.content}</div>
+      <div className="post-content" style={{ color: "var(--text-color)" }}>{post.content}</div>
       {post.imageUrl &&
         <div className="post-image">
           <img src={post.imageUrl} alt="post" style={{ maxWidth: "100%", borderRadius: 8 }} />
@@ -114,14 +118,36 @@ function PostCard({ post, onEdit, onDelete }) {
         {comments.length === 0 && (
           <div style={{ color: "#888", fontSize: "0.93em" }}>No comments yet.</div>
         )}
-        {comments.map(comment => (
-          <div className="comment" key={comment.id}>
-            <span className="comment-author">
-              {comment.user?.displayName || comment.user?.username || "Anonymous"}
-            </span>: {comment.content}
-          </div>
-        ))}
-        <form onSubmit={handleAddComment} style={{ marginTop: 8, display: "flex", gap: 7 }}>
+        {comments.map(comment => {
+          const cAuthor = comment.author || comment.user?.displayName || comment.user?.username || "Anonymous";
+          const cAvatar = cAuthor && cAuthor.trim() ? cAuthor.trim()[0].toUpperCase() : "👤";
+          return (
+            <div className="comment" key={comment.id} style={{ color: "var(--text-color)" }}>
+              <span className="author-avatar" style={{
+                width: 26, height: 26, fontSize: 13, marginRight: 6, display: "inline-flex", alignItems: "center", justifyContent: "center"
+              }}>
+                {cAvatar}
+              </span>
+              <span className="comment-author">{cAuthor}</span>: {comment.content}
+            </div>
+          );
+        })}
+        <form onSubmit={handleAddComment} style={{ marginTop: 8, display: "flex", gap: 7, alignItems: "center" }}>
+          <input
+            type="text"
+            value={commentAuthor}
+            onChange={e => setCommentAuthor(e.target.value)}
+            placeholder="Your name"
+            style={{
+              width: 110,
+              padding: "7px",
+              borderRadius: "5px",
+              border: "1px solid #333",
+              background: "#28292b",
+              color: "var(--text-color)",
+            }}
+            maxLength={28}
+          />
           <input
             value={commentText}
             onChange={e => setCommentText(e.target.value)}
@@ -131,7 +157,10 @@ function PostCard({ post, onEdit, onDelete }) {
               padding: "7px",
               borderRadius: "5px",
               border: "1px solid #333",
+              background: "#28292b",
+              color: "var(--text-color)"
             }}
+            maxLength={300}
           />
           <button
             type="submit"
