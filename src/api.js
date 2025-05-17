@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:8080/api/posts";
+const API_BASE = "https://final-api-vr8u.onrender.com/api/posts";
 
 export const getPosts = () => axios.get(API_BASE);
 export const createPost = (data) => axios.post(API_BASE, data);
