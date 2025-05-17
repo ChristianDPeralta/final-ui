@@ -27,13 +27,9 @@ function PostForm({ onSubmit, initialData, cancelEdit, submitting }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Require at least one input to be filled
-    if (
-      !author.trim() &&
-      !content.trim() &&
-      !imageUrl.trim()
-    ) {
-      setError("Please fill in at least one field.");
+    // Require at least one of content or imageUrl to be filled
+    if (!content.trim() && !imageUrl.trim()) {
+      setError("Please provide either some text or an image URL.");
       return;
     }
 
