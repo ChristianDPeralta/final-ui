@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { getComments, addComment } from "../api";
 
-function PostCard({ post, onEdit, onDelete }) {
+function PostCard({ post, onEdit, onDelete, userName }) {
   const [comments, setComments] = useState([]);
-  const [commentAuthor, setCommentAuthor] = useState(""); // New: commenter's name
   const [commentText, setCommentText] = useState("");
   const [likeCount, setLikeCount] = useState(post.likes || 0);
   const [liked, setLiked] = useState(false);
@@ -24,15 +23,15 @@ function PostCard({ post, onEdit, onDelete }) {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
+    if (!userName.trim()) return; // userName required for comments
     try {
       const res = await addComment(
         post.id,
-        { content: commentText, author: commentAuthor.trim() },
-        undefined // No userId
+        { content: commentText, author: userName.trim() },
+        undefined
       );
       setComments([...comments, res.data]);
       setCommentText("");
-      setCommentAuthor("");
     } catch (err) {
       // Optionally show an error
     }
@@ -135,8 +134,8 @@ function PostCard({ post, onEdit, onDelete }) {
         <form onSubmit={handleAddComment} style={{ marginTop: 8, display: "flex", gap: 7, alignItems: "center" }}>
           <input
             type="text"
-            value={commentAuthor}
-            onChange={e => setCommentAuthor(e.target.value)}
+            value={userName}
+            disabled
             placeholder="Your name"
             style={{
               width: 110,
@@ -145,8 +144,12 @@ function PostCard({ post, onEdit, onDelete }) {
               border: "1px solid #333",
               background: "#28292b",
               color: "var(--text-color)",
+              fontWeight: 600,
+              opacity: 1
             }}
             maxLength={28}
+            readOnly
+            tabIndex={-1}
           />
           <input
             value={commentText}
@@ -171,6 +174,7 @@ function PostCard({ post, onEdit, onDelete }) {
               border: "none",
               borderRadius: "5px"
             }}
+            disabled={!userName.trim() || !commentText.trim()}
           >
             Comment
           </button>
